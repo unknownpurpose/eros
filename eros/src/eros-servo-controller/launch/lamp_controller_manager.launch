@@ -1,0 +1,9 @@
+<launch>
+    <!-- Start tilt joint controller -->
+    <rosparam file="/catkin_ws/src/eros-servo-controller/lamp.yaml" command="load"/>
+    <node name="lamp_controller_spawner" pkg="dynamixel_controllers" type="controller_spawner.py"
+          args="--manager=dxl_manager
+                --port pan_tilt_port
+                lamp_controller"
+          output="screen"/>
+</launch>

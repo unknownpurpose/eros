@@ -1,0 +1,33 @@
+version: '3'
+services:
+  erosmaster:
+    build: ./eros
+    container_name: eros-master
+    ports:
+    - 11311:11311
+    volumes:
+      - ./eros:/catkin_ws
+    command: roscore
+  erosrobot:
+    depends_on:
+    - erosmaster
+    - erosjupyter
+    build: ./eros
+    container_name: eros-robot
+    environment:
+    - "ROS_MASTER_URI=http://eros-master:11311"
+    volumes:
+      - ./eros:/catkin_ws
+    command: roslaunch eros-servo-controller lamp_controller_manager.launch
+  erosjupyter:
+    depends_on:
+    - erosmaster
+    build: ./eros-jupyter
+    container_name: eros-jupyter
+    environment:
+    - "ROS_MASTER_URI=http://eros-master:11311"
+    ports:
+      - 8888:8888
+    volumes:
+      - ./eros-jupyter:/notebooks
+    command: jupyter notebook --ip=0.0.0.0 --allow-root
